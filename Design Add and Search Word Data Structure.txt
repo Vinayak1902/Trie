@@ -1,0 +1,45 @@
+Story for search function - 
+We will do dfs traversal for 0th index in the root node. In dfs first we need to make a pointer cur 
+to root which will traverse across the trie and then for words in range j to len(word) we will access
+each character of word. If the character is . then  check all the children in  cur.children.values and
+if the dfs call from index j+1 in child return true then return true else false after all childrens 
+are traversed. Else(when c in not .) simply check if c in present in curr.children then move your cur
+else return false and at alst after all characters are traversed from i to len(word) return curr.endOfWord
+
+class TrieNode():
+    def __init__(self):
+        self.endOfWord = False
+        self.children = {}
+class WordDictionary:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def addWord(self, word: str) -> None:
+        cur = self.root
+        for c in word:
+            if c not in cur.children:
+                cur.children[c] = TrieNode()
+            cur = cur.children[c]
+        cur.endOfWord = True
+
+    def search(self, word: str) -> bool:
+        def dfs(i,root):
+            cur = root
+            for j in range(i,len(word)):
+                c = word[j]
+                if c == ".":
+                    for child in cur.children.values():
+                        if dfs(j+1,child):
+                            return True
+                    return False
+                else:
+                    if c not in cur.children:
+                        return False
+                    cur = cur.children[c]
+            return cur.endOfWord
+        return dfs(0,self.root)
+
+TC - O(n) for all functions
+SC - O(n+t) 
+
+
