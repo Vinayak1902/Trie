@@ -1,0 +1,73 @@
+Brute Force - 
+For every word run dfs from every character of the matrix
+TC in such will be w*m*n*4^(m*n)
+
+Using Tries - 
+findWords() -
+The idea is that we will first make a trie of all given words so that we are aware of all the words,
+which we need to find.
+So while traversing the matrix if we move forward in the trie then we will continue else we will stop
+and this is how we will save our time.
+Code of findWords() - 
+make a pointer root which basically points to a TrieNode and then for all words add them in this root
+Trie using addWord function.
+Make ROWS, COLS variable which will be equal to length and width of matrix
+Make res and visited which are going to sets in order to avoid multiple runs
+DFS function(r,c,node,word) - 
+if r<0 or c<0 or r== rows or c==cols or board[r][c] not in node.children or (r,c) in visited then return
+else add (r,c) to visit, move node to node.children[board[r[c]]], add board[r][c] in word,
+if node is the last then add word in res, call dfs in 4 directions, remove (r,c) from visit since it 
+is a backtrack
+Here ends our dfs function and now just dfs from every index of the matrix with root and and empty 
+string in starting and at last return list(res) since res was initially a set.
+
+code - 
+class TrieNode:
+    def __init__(self):
+        self.endOfWord = False
+        self.children = {}
+    def addWord(self,word):
+        curr = self
+        for c in word:
+            if c not in  curr.children:
+                curr.children[c] = TrieNode()
+            curr = curr.children[c]
+        curr.endOfWord = True
+
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        root = TrieNode()
+        for w in words:
+            root.addWord(w)
+        rows, cols = len(board), len(board[0])
+        res, visited = set(), set()
+
+        def dfs(r,c,node,word):
+            if(r<0 or r>=rows or c<0 or c>=cols or (r,c) in visited or board[r][c] not in  node.children):
+                return
+            visited.add((r,c))
+            word += board[r][c]
+            node = node.children[board[r][c]]
+            if node.endOfWord:
+                res.add(word)
+            dfs(r+1,c,node,word)
+            dfs(r,c+1,node,word)
+            dfs(r-1,c,node,word)
+            dfs(r,c-1,node,word)
+            visited.remove((r,c))
+        
+        for r in range(rows):
+            for c in range(cols):
+                dfs(r,c,root,"")
+        return list(res)
+        
+
+TC - O(m*n*4^t)
+SC - O(s)
+
+Here m = no of rows
+n = no of cols
+t = max word length
+s= sum of length of all words
+
+
