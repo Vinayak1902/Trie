@@ -62,7 +62,7 @@ class Solution:
         return list(res)
         
 
-TC - O(m*n*4^t)
+TC - O(m*n*4^t + s)
 SC - O(s)
 
 Here m = no of rows
